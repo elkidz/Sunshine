@@ -211,6 +211,14 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
         return true;
     }
 
+    public void showMap(Uri geoLocation) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -221,8 +229,12 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
             return true;
         }
 
-        // TODO (2) Launch the map when the map menu item is clicked
-
+        // c (2) Launch the map when the map menu item is clicked
+        if (id == R.id.open_map) {
+            Uri gmmIntentUri = Uri.parse("geo:0,0?q=Rua+Fonte+da+Lameira");
+            showMap(gmmIntentUri);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }
