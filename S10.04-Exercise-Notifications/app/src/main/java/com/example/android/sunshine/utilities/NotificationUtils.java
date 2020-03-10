@@ -33,7 +33,7 @@ public class NotificationUtils {
     public static final int INDEX_MIN_TEMP = 2;
 
 //  TODO (1) Create a constant int value to identify the notification
-
+    
     /**
      * Constructs and displays a notification for the newly updated weather for today.
      *
