@@ -1,21 +1,6 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package com.example.android.sunshine;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.preference.CheckBoxPreference;
@@ -23,10 +8,6 @@ import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
-
-import com.example.android.sunshine.data.SunshinePreferences;
-import com.example.android.sunshine.data.WeatherContract;
-import com.example.android.sunshine.sync.SunshineSyncUtils;
 
 /**
  * The SettingsFragment serves as the display for all of the user's settings. In Sunshine, the
@@ -37,15 +18,20 @@ import com.example.android.sunshine.sync.SunshineSyncUtils;
  * Please note: If you are using our dummy weather services, the location returned will always be
  * Mountain View, California.
  */
+// COMPLETED (4) Create SettingsFragment and extend PreferenceFragmentCompat
+    //TODO - estudar isto
 public class SettingsFragment extends PreferenceFragmentCompat implements
+        // COMPLETED (10) Implement OnSharedPreferenceChangeListener from SettingsFragment
         SharedPreferences.OnSharedPreferenceChangeListener {
 
+    // COMPLETED (8) Create a method called setPreferenceSummary that accepts a Preference and an Object and sets the summary of the preference
     private void setPreferenceSummary(Preference preference, Object value) {
         String stringValue = value.toString();
+        String key = preference.getKey();
 
         if (preference instanceof ListPreference) {
-            // For list preferences, look up the correct display value in
-            // the preference's 'entries' list (since they have separate labels/values).
+            /* For list preferences, look up the correct display value in */
+            /* the preference's 'entries' list (since they have separate labels/values). */
             ListPreference listPreference = (ListPreference) preference;
             int prefIndex = listPreference.findIndexOfValue(stringValue);
             if (prefIndex >= 0) {
@@ -57,11 +43,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         }
     }
 
+    // COMPLETED (5) Override onCreatePreferences and add the preference xml file using addPreferencesFromResource
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-        // Add 'general' preferences, defined in the XML file
+        /* Add 'general' preferences, defined in the XML file */
         addPreferencesFromResource(R.xml.pref_general);
 
+        // COMPLETED (9) Set the preference summary on each preference that isn't a CheckBoxPreference
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         PreferenceScreen prefScreen = getPreferenceScreen();
         int count = prefScreen.getPreferenceCount();
@@ -74,36 +62,27 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         }
     }
 
+    // COMPLETED (13) Unregister SettingsFragment (this) as a SharedPreferenceChangedListener in onStop
     @Override
     public void onStop() {
         super.onStop();
-        // unregister the preference change listener
+        /* Unregister the preference change listener */
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    // COMPLETED (12) Register SettingsFragment (this) as a SharedPreferenceChangedListener in onStart
     @Override
     public void onStart() {
         super.onStart();
-        // register the preference change listener
+        /* Register the preference change listener */
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
     }
 
+    // COMPLETED (11) Override onSharedPreferenceChanged to update non CheckBoxPreferences when they are changed
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Activity activity = getActivity();
-
-        if (key.equals(getString(R.string.pref_location_key))) {
-            // we've changed the location
-            // Wipe out any potential PlacePicker latlng values so that we can use this text entry.
-            SunshinePreferences.resetLocationCoordinates(activity);
-            //  c (14) Sync the weather if the location changes
-            SunshineSyncUtils.startImmediateSync(activity);
-        } else if (key.equals(getString(R.string.pref_units_key))) {
-            // units have changed. update lists of weather entries accordingly
-            activity.getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
-        }
         Preference preference = findPreference(key);
         if (null != preference) {
             if (!(preference instanceof CheckBoxPreference)) {
