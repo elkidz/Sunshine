@@ -59,7 +59,7 @@
             tools:text="38%"/>
 
         <!-- Pressure label -->
-        <!-- COMPLETED (8) Replace the appropriate attributes with the DetailLabel style -->
+        <!-- c (8) Replace the appropriate attributes with the DetailLabel style -->
         <TextView
             android:id="@+id/pressure_label"
             style="@style/DetailLabel"
